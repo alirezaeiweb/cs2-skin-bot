@@ -1,203 +1,178 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ثبت آگهی اسکین CS2</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ثبت آگهی CS2</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Tahoma, sans-serif; background: var(--tg-theme-bg-color, #fff); color: var(--tg-theme-text-color, #000); padding: 16px; }
+  h2 { text-align: center; margin-bottom: 16px; font-size: 18px; }
+  .type-btns { display: flex; gap: 8px; margin-bottom: 16px; }
+  .type-btn { flex: 1; padding: 10px; border: 2px solid #ccc; border-radius: 8px; background: none; cursor: pointer; font-size: 14px; }
+  .type-btn.active { border-color: #2196F3; background: #e3f2fd; font-weight: bold; }
+  .field { margin-bottom: 14px; }
+  label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: bold; }
+  input[type=text], input[type=number], input[type=url], select, textarea {
+    width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px;
+    background: var(--tg-theme-secondary-bg-color, #f5f5f5); color: var(--tg-theme-text-color, #000);
+  }
+  textarea { resize: vertical; min-height: 80px; }
 
-    body {
-      font-family: Vazir ,Tahoma, Arial, sans-serif;
-      background-color: var(--tg-theme-bg-color, #ffffff);
-      color: var(--tg-theme-text-color, #000000);
-      padding: 16px 16px 80px;
-      font-size: 14px;
-    }
+  /* آپلود عکس */
+  .photo-upload { width: 100%; aspect-ratio: 1; border: 2px dashed #ccc; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; background: var(--tg-theme-secondary-bg-color, #f5f5f5); }
+  .photo-upload .plus { font-size: 48px; color: #aaa; line-height: 1; }
+  .photo-upload img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+  .photo-upload input { display: none; }
 
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 18px;
-      color: var(--tg-theme-text-color, #000);
-    }
+  /* قیمت توافقی */
+  .price-row { display: flex; align-items: center; gap: 8px; }
+  .price-row input[type=number] { flex: 1; }
+  .price-row label.toggle { display: flex; align-items: center; gap: 4px; font-weight: normal; white-space: nowrap; cursor: pointer; }
 
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 6px;
-      color: var(--tg-theme-hint-color, #555);
-      font-size: 13px;
-      font-family: Vazir, Tahoma, Arial, sans-serif;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--tg-theme-hint-color, #ccc);
-      background-color: var(--tg-theme-secondary-bg-color, #f5f5f5);
-      color: var(--tg-theme-text-color, #000);
-      font-size: 14px;
-      font-family: Vazir, Tahoma, Arial, sans-serif;
-      outline: none;
-      transition: border 0.2s;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      border-color: var(--tg-theme-button-color, #2481cc);
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    .error-msg {
-      color: #e53935;
-      font-size: 12px;
-      margin-top: 4px;
-      display: none;
-    }
-
-    .error-msg.visible {
-      display: block;
-    }
-
-    .divider {
-      border: none;
-      border-top: 1px solid var(--tg-theme-hint-color, #ddd);
-      margin: 20px 0;
-    }
-  </style>
+  button[type=submit] { width: 100%; padding: 12px; background: #2196F3; color: #fff; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; margin-top: 8px; }
+  .hidden { display: none; }
+  .error { color: red; font-size: 12px; margin-top: 4px; }
+</style>
 </head>
 <body>
 
-  <h2>🎮 ثبت آگهی اسکین CS2</h2>
+<h2>ثبت آگهی اسکین CS2</h2>
 
-  <div class="form-group">
-    <label for="type">نوع آگهی *</label>
-    <select id="type">
-      <option value="sell">🔴 فروش</option>
-      <option value="buy">🟢 خرید</option>
-      <option value="trade">🔵 معاوضه</option>
+<div class="type-btns">
+  <button class="type-btn active" onclick="setType('buy')">خرید</button>
+  <button class="type-btn" onclick="setType('sell')">فروش</button>
+  <button class="type-btn" onclick="setType('trade')">معاوضه</button>
+</div>
+
+<form id="adForm" onsubmit="submitForm(event)">
+
+  <!-- عکس -->
+  <div class="field">
+    <label>عکس اسکین</label>
+    <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+      <span class="plus" id="plusIcon">＋</span>
+      <img id="photoPreview" src="" alt="" style="display:none">
+      <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp,image/bmp" onchange="handlePhoto(event)">
+    </div>
+    <div class="error hidden" id="photoError">فقط فرمت‌های JPG، PNG، WEBP مجاز است.</div>
+  </div>
+
+  <!-- نام اسکین -->
+  <div class="field">
+    <label>نام اسکین</label>
+    <input type="text" id="skinName" placeholder="مثال: AK-47 | Redline" required>
+  </div>
+
+  <!-- کیفیت -->
+  <div class="field">
+    <label>کیفیت</label>
+    <select id="quality">
+      <option value="Factory New">Factory New</option>
+      <option value="Minimal Wear">Minimal Wear</option>
+      <option value="Field-Tested">Field-Tested</option>
+      <option value="Well-Worn">Well-Worn</option>
+      <option value="Battle-Scarred">Battle-Scarred</option>
     </select>
   </div>
 
-  <div class="form-group">
-    <label for="skin">نام اسکین *</label>
-    <input
-      id="skin"
-      type="text"
-      placeholder="مثلاً: AK-47 | Redline"
-      maxlength="100"
-    />
-    <span class="error-msg" id="skin-error">نام اسکین را وارد کن</span>
+  <!-- قیمت (خرید و فروش) -->
+  <div class="field" id="priceField">
+    <label id="priceLabel">قیمت (تومان)</label>
+    <div class="price-row">
+      <input type="number" id="price" placeholder="مبلغ به تومان" min="0">
+      <label class="toggle">
+        <input type="checkbox" id="negotiable" onchange="toggleNegotiable()"> توافقی
+      </label>
+    </div>
   </div>
 
-  <div class="form-group">
-    <label for="wear">وضعیت سایش</label>
-    <select id="wear">
-      <option value="Factory New">Factory New (FN)</option>
-      <option value="Minimal Wear">Minimal Wear (MW)</option>
-      <option value="Field-Tested">Field-Tested (FT)</option>
-      <option value="Well-Worn">Well-Worn (WW)</option>
-      <option value="Battle-Scarred">Battle-Scarred (BS)</option>
-      <option value="-">مشخص نیست</option>
-    </select>
+  <!-- توضیحات -->
+  <div class="field">
+    <label>توضیحات</label>
+    <textarea id="description" placeholder="توضیحات اضافه..."></textarea>
   </div>
 
-  <div class="form-group">
-    <label for="price">قیمت (تومان)</label>
-    <input
-      id="price"
-      type="number"
-      placeholder="اگه معاوضه‌ست خالی بذار"
-      min="0"
-    />
+  <!-- لینک ترید (فروش و معاوضه) -->
+  <div class="field hidden" id="tradeLinkField">
+    <label>لینک ترید</label>
+    <input type="url" id="tradeLink" placeholder="https://steamcommunity.com/tradeoffer/...">
   </div>
 
-  <hr class="divider" />
+  <button type="submit">ثبت آگهی</button>
+</form>
 
-  <div class="form-group">
-    <label for="desc">توضیحات</label>
-    <textarea
-      id="desc"
-      placeholder="هر توضیح اضافه‌ای مثل StatTrak، هولوگرام، فلوت دقیق و..."
-      maxlength="300"
-    ></textarea>
-  </div>
+<script>
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
 
-  <div class="form-group">
-    <label for="contact">راه ارتباطی *</label>
-    <input
-      id="contact"
-      type="text"
-      placeholder="مثلاً: @username یا شماره تلفن"
-      maxlength="100"
-    />
-    <span class="error-msg" id="contact-error">راه ارتباطی را وارد کن</span>
-  </div>
+let currentType = 'buy';
+let photoBase64 = null;
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
+function setType(type) {
+  currentType = type;
+  document.querySelectorAll('.type-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['buy','sell','trade'][i] === type);
+  });
+  document.getElementById('priceField').classList.toggle('hidden', type === 'trade');
+  document.getElementById('tradeLinkField').classList.toggle('hidden', type === 'buy');
+  document.getElementById('priceLabel').textContent = type === 'buy' ? 'قیمت مد نظر (تومان)' : 'قیمت (تومان)';
+}
 
-    tg.MainButton.setText("✅ ثبت آگهی").show();
+function toggleNegotiable() {
+  const neg = document.getElementById('negotiable').checked;
+  document.getElementById('price').disabled = neg;
+  if (neg) document.getElementById('price').value = '';
+}
 
-    function validate() {
-      let valid = true;
+function handlePhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  // بلاک کردن GIF و فایل‌های غیر عکس
+  const allowed = ['image/jpeg','image/png','image/webp','image/bmp'];
+  if (!allowed.includes(file.type)) {
+    document.getElementById('photoError').classList.remove('hidden');
+    event.target.value = '';
+    return;
+  }
+  document.getElementById('photoError').classList.add('hidden');
+  const reader = new FileReader();
+  reader.onload = e => {
+    photoBase64 = e.target.result;
+    const preview = document.getElementById('photoPreview');
+    preview.src = photoBase64;
+    preview.style.display = 'block';document.getElementById('plusIcon').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
 
-      const skin = document.getElementById("skin").value.trim();
-      const skinError = document.getElementById("skin-error");
-      if (!skin) {
-        skinError.classList.add("visible");
-        valid = false;
-      } else {
-        skinError.classList.remove("visible");
-      }
+function submitForm(e) {
+  e.preventDefault();
+  const skinName = document.getElementById('skinName').value.trim();
+  if (!skinName) return;
 
-      const contact = document.getElementById("contact").value.trim();
-      const contactError = document.getElementById("contact-error");
-      if (!contact) {
-        contactError.classList.add("visible");
-        valid = false;
-      } else {
-        contactError.classList.remove("visible");
-      }
+  const negotiable = document.getElementById('negotiable').checked;
+  const price = negotiable ? 'توافقی' : (document.getElementById('price').value || null);
 
-      return valid;
-    }
+  const data = {
+    type: currentType,
+    skin_name: skinName,
+    quality: document.getElementById('quality').value,
+    description: document.getElementById('description').value.trim(),
+    photo: photoBase64,
+  };
 
-    tg.MainButton.onClick(() => {
-      if (!validate()) return;
+  if (currentType !== 'trade') {
+    data.price = price;
+  }
+  if (currentType === 'sell' || currentType === 'trade') {
+    data.trade_link = document.getElementById('tradeLink').value.trim();
+  }
 
-      const data = {
-        type: document.getElementById("type").value,
-        skin: document.getElementById("skin").value.trim(),
-        wear: document.getElementById("wear").value,
-        price: document.getElementById("price").value.trim(),
-        desc: document.getElementById("desc").value.trim(),
-        contact: document.getElementById("contact").value.trim(),
-      };
-
-      tg.sendData(JSON.stringify(data));
-    });
-  </script>
-
+  tg.sendData(JSON.stringify(data));
+}
+</script>
 </body>
 </html>
