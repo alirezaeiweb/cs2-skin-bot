@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ثبت آگهی اسکین CS2</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Tahoma, Arial, sans-serif;
+      background-color: var(--tg-theme-bg-color, #ffffff);
+      color: var(--tg-theme-text-color, #000000);
+      padding: 16px 16px 80px;
+      font-size: 14px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 18px;
+      color: var(--tg-theme-text-color, #000);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: var(--tg-theme-hint-color, #555);
+      font-size: 13px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--tg-theme-hint-color, #ccc);
+      background-color: var(--tg-theme-secondary-bg-color, #f5f5f5);
+      color: var(--tg-theme-text-color, #000);
+      font-size: 14px;
+      font-family: Tahoma, Arial, sans-serif;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--tg-theme-button-color, #2481cc);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .error-msg {
+      color: #e53935;
+      font-size: 12px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .error-msg.visible {
+      display: block;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--tg-theme-hint-color, #ddd);
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🎮 ثبت آگهی اسکین CS2</h2>
+
+  <div class="form-group">
+    <label for="type">نوع آگهی *</label>
+    <select id="type">
+      <option value="sell">🔴 فروش</option>
+      <option value="buy">🟢 خرید</option>
+      <option value="trade">🔵 معاوضه</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="skin">نام اسکین *</label>
+    <input
+      id="skin"
+      type="text"
+      placeholder="مثلاً: AK-47 | Redline"
+      maxlength="100"
+    />
+    <span class="error-msg" id="skin-error">نام اسکین را وارد کن</span>
+  </div>
+
+  <div class="form-group">
+    <label for="wear">وضعیت سایش</label>
+    <select id="wear">
+      <option value="Factory New">Factory New (FN)</option>
+      <option value="Minimal Wear">Minimal Wear (MW)</option>
+      <option value="Field-Tested">Field-Tested (FT)</option>
+      <option value="Well-Worn">Well-Worn (WW)</option>
+      <option value="Battle-Scarred">Battle-Scarred (BS)</option>
+      <option value="-">مشخص نیست</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="price">قیمت (تومان)</label>
+    <input
+      id="price"
+      type="number"
+      placeholder="اگه معاوضه‌ست خالی بذار"
+      min="0"
+    />
+  </div>
+
+  <hr class="divider" />
+
+  <div class="form-group">
+    <label for="desc">توضیحات</label>
+    <textarea
+      id="desc"
+      placeholder="هر توضیح اضافه‌ای مثل StatTrak، هولوگرام، فلوت دقیق و..."
+      maxlength="300"
+    ></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="contact">راه ارتباطی *</label>
+    <input
+      id="contact"
+      type="text"
+      placeholder="مثلاً: @username یا شماره تلفن"
+      maxlength="100"
+    />
+    <span class="error-msg" id="contact-error">راه ارتباطی را وارد کن</span>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+
+    tg.MainButton.setText("✅ ثبت آگهی").show();
+
+    function validate() {
+      let valid = true;
+
+      const skin = document.getElementById("skin").value.trim();
+      const skinError = document.getElementById("skin-error");
+      if (!skin) {
+        skinError.classList.add("visible");
+        valid = false;
+      } else {
+        skinError.classList.remove("visible");
+      }
+
+      const contact = document.getElementById("contact").value.trim();
+      const contactError = document.getElementById("contact-error");
+      if (!contact) {
+        contactError.classList.add("visible");
+        valid = false;
+      } else {
+        contactError.classList.remove("visible");
+      }
+
+      return valid;
+    }
+
+    tg.MainButton.onClick(() => {
+      if (!validate()) return;
+
+      const data = {
+        type: document.getElementById("type").value,
+        skin: document.getElementById("skin").value.trim(),
+        wear: document.getElementById("wear").value,
+        price: document.getElementById("price").value.trim(),
+        desc: document.getElementById("desc").value.trim(),
+        contact: document.getElementById("contact").value.trim(),
+      };
+
+      tg.sendData(JSON.stringify(data));
+    });
+  </script>
+
+</body>
+</html>
