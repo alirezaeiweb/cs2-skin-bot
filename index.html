@@ -19,16 +19,49 @@
   }
   textarea { resize: vertical; min-height: 80px; }
 
-  .photo-upload { width: 100%; height: 160px; border: 2px dashed #ccc; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; background: var(--tg-theme-secondary-bg-color, #f5f5f5); }
-  .photo-upload .plus { font-size: 36px; color: #aaa; line-height: 1; }
-  .photo-upload img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+  /* بخش عکس */
+  .photo-upload {
+    width: 100%; height: 160px;
+    border: 2px dashed #ccc; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; position: relative; overflow: hidden;
+    background: var(--tg-theme-secondary-bg-color, #f5f5f5);
+    transition: border-color 0.2s;
+  }
+  .photo-upload:hover { border-color: #2196F3; }
+  .photo-upload .plus { font-size: 36px; color: #aaa; line-height: 1; pointer-events: none; }
+  .photo-upload img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    position: absolute; top: 0; left: 0;
+    border-radius: 10px;
+  }
   .photo-upload input { display: none; }
+  .photo-remove {
+    position: absolute; top: 6px; left: 6px;
+    background: rgba(0,0,0,0.55); color: #fff;
+    border: none; border-radius: 50%;
+    width: 26px; height: 26px; font-size: 14px;
+    cursor: pointer; display: none;
+    align-items: center; justify-content: center;
+    z-index: 2;
+  }
 
   .price-row { display: flex; align-items: center; gap: 8px; }
   .price-row input[type=number] { flex: 1; }
-  .price-row label.toggle { display: flex; align-items: center; gap: 4px; font-weight: normal; white-space: nowrap; cursor: pointer; font-family: 'Vazir', Tahoma, sans-serif; }
+  .price-row label.toggle {
+    display: flex; align-items: center; gap: 4px;
+    font-weight: normal; white-space: nowrap;
+    cursor: pointer; font-family: 'Vazir', Tahoma, sans-serif;
+  }
 
-  button[type=submit] { width: 100%; padding: 12px; background: #2196F3; color: #fff; border: none; border-radius: 10px; font-size: 16px; font-family: 'Vazir', Tahoma, sans-serif; cursor: pointer; margin-top: 8px; }
+  button[type=submit] {
+    width: 100%; padding: 12px; background: #2196F3;
+    color: #fff; border: none; border-radius: 10px;
+    font-size: 16px; font-family: 'Vazir', Tahoma, sans-serif;
+    cursor: pointer; margin-top: 8px;
+  }
+  button[type=submit]:active { background: #1769aa; }
   .hidden { display: none; }
   .error { color: red; font-size: 12px; margin-top: 4px; }
 </style>
@@ -38,12 +71,14 @@
 <h2>ثبت آگهی اسکین CS2</h2>
 
 <form id="adForm" onsubmit="submitForm(event)">
+
   <!-- عکس -->
   <div class="field">
     <label>عکس اسکین</label>
-    <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+    <div class="photo-upload" id="photoBox" onclick="onPhotoBoxClick(event)">
       <span class="plus" id="plusIcon">＋</span>
       <img id="photoPreview" src="" alt="" style="display:none">
+      <button type="button" class="photo-remove" id="removeBtn" onclick="removePhoto(event)">✕</button>
       <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp,image/bmp" onchange="handlePhoto(event)">
     </div>
     <div class="error hidden" id="photoError">فقط فرمت‌های JPG، PNG، WEBP مجاز است.</div>
@@ -77,9 +112,9 @@
     </select>
   </div>
 
-  <!-- قیمت -->
-  <div class="field" id="priceField">
-    <label id="priceLabel">قیمت مد نظر (تومان)</label>
+  <!-- قیمت — فقط خرید و فروش -->
+  <div class="field hidden" id="priceField">
+    <label id="priceLabel">قیمت (تومان)</label>
     <div class="price-row">
       <input type="number" id="price" placeholder="مبلغ به تومان" min="0">
       <label class="toggle">
@@ -94,7 +129,7 @@
     <textarea id="description" placeholder="توضیحات اضافه..."></textarea>
   </div>
 
-  <!-- لینک ترید -->
+  <!-- لینک ترید — فقط فروش و معاوضه -->
   <div class="field hidden" id="tradeLinkField">
     <label>لینک ترید</label>
     <input type="url" id="tradeLink" placeholder="https://steamcommunity.com/tradeoffer/...">
@@ -111,47 +146,86 @@ tg.expand();
 let currentType = 'buy';
 let photoBase64 = null;
 
+// اجرای اولیه برای نمایش فیلدهای صحیح
+setType('buy');
+
 function setType(type) {
   currentType = type;
+
+  // قیمت: فقط خرید و فروش
   document.getElementById('priceField').classList.toggle('hidden', type === 'trade');
+
+  // لینک ترید: فقط فروش و معاوضه
   document.getElementById('tradeLinkField').classList.toggle('hidden', type === 'buy');
-  document.getElementById('priceLabel').textContent = type === 'buy' ? 'قیمت مد نظر (تومان)' : 'قیمت (تومان)';
+
+  // لیبل قیمت
+  document.getElementById('priceLabel').textContent =
+    type === 'buy' ? 'قیمت مد نظر (تومان)' : 'قیمت (تومان)';
 }
 
 function toggleNegotiable() {
   const neg = document.getElementById('negotiable').checked;
-  document.getElementById('price').disabled = neg;
-  if (neg) document.getElementById('price').value = '';
+  const priceInput = document.getElementById('price');
+  priceInput.disabled = neg;
+  if (neg) priceInput.value = '';
+}
+
+function onPhotoBoxClick(e) {
+  // اگر روی دکمه حذف کلیک شد، فایل‌پیکر باز نشود
+  if (e.target.id === 'removeBtn') return;
+  document.getElementById('photoInput').click();
 }
 
 function handlePhoto(event) {
   const file = event.target.files[0];
   if (!file) return;
-  const allowed = ['image/jpeg','image/png','image/webp','image/bmp'];
+
+  const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/bmp'];
   if (!allowed.includes(file.type)) {
     document.getElementById('photoError').classList.remove('hidden');
     event.target.value = '';
     return;
   }
   document.getElementById('photoError').classList.add('hidden');
+
   const reader = new FileReader();
   reader.onload = e => {
     photoBase64 = e.target.result;
+
     const preview = document.getElementById('photoPreview');
     preview.src = photoBase64;
     preview.style.display = 'block';
+
     document.getElementById('plusIcon').style.display = 'none';
+
+    const removeBtn = document.getElementById('removeBtn');
+    removeBtn.style.display = 'flex';
   };
   reader.readAsDataURL(file);
 }
 
+function removePhoto(e) {
+  e.stopPropagation();
+  photoBase64 = null;
+
+  const preview = document.getElementById('photoPreview');
+  preview.src = '';
+  preview.style.display = 'none';
+
+  document.getElementById('plusIcon').style.display = 'block';
+  document.getElementById('removeBtn').style.display = 'none';
+  document.getElementById('photoInput').value = '';
+}
+
 function submitForm(e) {
   e.preventDefault();
+
   const skinName = document.getElementById('skinName').value.trim();
   if (!skinName) return;
 
   const negotiable = document.getElementById('negotiable').checked;
-  const price = negotiable ? 'توافقی' : (document.getElementById('price').value || null);
+  const priceVal = document.getElementById('price').value;
+  const price = negotiable ? 'توافقی' : (priceVal || null);
 
   const data = {
     type: currentType,
@@ -162,7 +236,9 @@ function submitForm(e) {
   };
 
   if (currentType !== 'trade') data.price = price;
-  if (currentType === 'sell' || currentType === 'trade') data.trade_link = document.getElementById('tradeLink').value.trim();
+  if (currentType === 'sell' || currentType === 'trade') {
+    data.trade_link = document.getElementById('tradeLink').value.trim();
+  }
 
   tg.sendData(JSON.stringify(data));
 }
