@@ -5,33 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ثبت آگهی CS2</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Tahoma, sans-serif; background: var(--tg-theme-bg-color, #fff); color: var(--tg-theme-text-color, #000); padding: 16px; }
+  body { font-family: 'Vazir', Tahoma, sans-serif; background: var(--tg-theme-bg-color, #fff); color: var(--tg-theme-text-color, #000); padding: 16px; }
   h2 { text-align: center; margin-bottom: 16px; font-size: 18px; }
-  .type-btns { display: flex; gap: 8px; margin-bottom: 16px; }
-  .type-btn { flex: 1; padding: 10px; border: 2px solid #ccc; border-radius: 8px; background: none; cursor: pointer; font-size: 14px; }
-  .type-btn.active { border-color: #2196F3; background: #e3f2fd; font-weight: bold; }
   .field { margin-bottom: 14px; }
-  label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: bold; }
+  label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: bold; font-family: 'Vazir', Tahoma, sans-serif; }
   input[type=text], input[type=number], input[type=url], select, textarea {
     width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px;
+    font-family: 'Vazir', Tahoma, sans-serif;
     background: var(--tg-theme-secondary-bg-color, #f5f5f5); color: var(--tg-theme-text-color, #000);
   }
   textarea { resize: vertical; min-height: 80px; }
 
-  /* آپلود عکس */
-  .photo-upload { width: 100%; aspect-ratio: 1; border: 2px dashed #ccc; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; background: var(--tg-theme-secondary-bg-color, #f5f5f5); }
-  .photo-upload .plus { font-size: 48px; color: #aaa; line-height: 1; }
+  .photo-upload { width: 100%; height: 160px; border: 2px dashed #ccc; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; background: var(--tg-theme-secondary-bg-color, #f5f5f5); }
+  .photo-upload .plus { font-size: 36px; color: #aaa; line-height: 1; }
   .photo-upload img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
   .photo-upload input { display: none; }
 
-  /* قیمت توافقی */
   .price-row { display: flex; align-items: center; gap: 8px; }
   .price-row input[type=number] { flex: 1; }
-  .price-row label.toggle { display: flex; align-items: center; gap: 4px; font-weight: normal; white-space: nowrap; cursor: pointer; }
+  .price-row label.toggle { display: flex; align-items: center; gap: 4px; font-weight: normal; white-space: nowrap; cursor: pointer; font-family: 'Vazir', Tahoma, sans-serif; }
 
-  button[type=submit] { width: 100%; padding: 12px; background: #2196F3; color: #fff; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; margin-top: 8px; }
+  button[type=submit] { width: 100%; padding: 12px; background: #2196F3; color: #fff; border: none; border-radius: 10px; font-size: 16px; font-family: 'Vazir', Tahoma, sans-serif; cursor: pointer; margin-top: 8px; }
   .hidden { display: none; }
   .error { color: red; font-size: 12px; margin-top: 4px; }
 </style>
@@ -40,14 +37,7 @@
 
 <h2>ثبت آگهی اسکین CS2</h2>
 
-<div class="type-btns">
-  <button class="type-btn active" onclick="setType('buy')">خرید</button>
-  <button class="type-btn" onclick="setType('sell')">فروش</button>
-  <button class="type-btn" onclick="setType('trade')">معاوضه</button>
-</div>
-
 <form id="adForm" onsubmit="submitForm(event)">
-
   <!-- عکس -->
   <div class="field">
     <label>عکس اسکین</label>
@@ -57,6 +47,16 @@
       <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp,image/bmp" onchange="handlePhoto(event)">
     </div>
     <div class="error hidden" id="photoError">فقط فرمت‌های JPG، PNG، WEBP مجاز است.</div>
+  </div>
+
+  <!-- نوع آگهی -->
+  <div class="field">
+    <label>نوع آگهی</label>
+    <select id="adType" onchange="setType(this.value)">
+      <option value="buy">خرید</option>
+      <option value="sell">فروش</option>
+      <option value="trade">معاوضه</option>
+    </select>
   </div>
 
   <!-- نام اسکین -->
@@ -77,9 +77,9 @@
     </select>
   </div>
 
-  <!-- قیمت (خرید و فروش) -->
+  <!-- قیمت -->
   <div class="field" id="priceField">
-    <label id="priceLabel">قیمت (تومان)</label>
+    <label id="priceLabel">قیمت مد نظر (تومان)</label>
     <div class="price-row">
       <input type="number" id="price" placeholder="مبلغ به تومان" min="0">
       <label class="toggle">
@@ -94,7 +94,7 @@
     <textarea id="description" placeholder="توضیحات اضافه..."></textarea>
   </div>
 
-  <!-- لینک ترید (فروش و معاوضه) -->
+  <!-- لینک ترید -->
   <div class="field hidden" id="tradeLinkField">
     <label>لینک ترید</label>
     <input type="url" id="tradeLink" placeholder="https://steamcommunity.com/tradeoffer/...">
@@ -113,9 +113,6 @@ let photoBase64 = null;
 
 function setType(type) {
   currentType = type;
-  document.querySelectorAll('.type-btn').forEach((b, i) => {
-    b.classList.toggle('active', ['buy','sell','trade'][i] === type);
-  });
   document.getElementById('priceField').classList.toggle('hidden', type === 'trade');
   document.getElementById('tradeLinkField').classList.toggle('hidden', type === 'buy');
   document.getElementById('priceLabel').textContent = type === 'buy' ? 'قیمت مد نظر (تومان)' : 'قیمت (تومان)';
@@ -130,7 +127,6 @@ function toggleNegotiable() {
 function handlePhoto(event) {
   const file = event.target.files[0];
   if (!file) return;
-  // بلاک کردن GIF و فایل‌های غیر عکس
   const allowed = ['image/jpeg','image/png','image/webp','image/bmp'];
   if (!allowed.includes(file.type)) {
     document.getElementById('photoError').classList.remove('hidden');
@@ -143,7 +139,8 @@ function handlePhoto(event) {
     photoBase64 = e.target.result;
     const preview = document.getElementById('photoPreview');
     preview.src = photoBase64;
-    preview.style.display = 'block';document.getElementById('plusIcon').style.display = 'none';
+    preview.style.display = 'block';
+    document.getElementById('plusIcon').style.display = 'none';
   };
   reader.readAsDataURL(file);
 }
@@ -164,12 +161,8 @@ function submitForm(e) {
     photo: photoBase64,
   };
 
-  if (currentType !== 'trade') {
-    data.price = price;
-  }
-  if (currentType === 'sell' || currentType === 'trade') {
-    data.trade_link = document.getElementById('tradeLink').value.trim();
-  }
+  if (currentType !== 'trade') data.price = price;
+  if (currentType === 'sell' || currentType === 'trade') data.trade_link = document.getElementById('tradeLink').value.trim();
 
   tg.sendData(JSON.stringify(data));
 }
