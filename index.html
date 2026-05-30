@@ -1,247 +1,356 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ثبت آگهی CS2</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Vazir', Tahoma, sans-serif; background: var(--tg-theme-bg-color, #fff); color: var(--tg-theme-text-color, #000); padding: 16px; }
-  h2 { text-align: center; margin-bottom: 16px; font-size: 18px; }
-  .field { margin-bottom: 14px; }
-  label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: bold; font-family: 'Vazir', Tahoma, sans-serif; }
-  input[type=text], input[type=number], input[type=url], select, textarea {
-    width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px;
-    font-family: 'Vazir', Tahoma, sans-serif;
-    background: var(--tg-theme-secondary-bg-color, #f5f5f5); color: var(--tg-theme-text-color, #000);
-  }
-  textarea { resize: vertical; min-height: 80px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ثبت آگهی CS2</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-  /* بخش عکس */
-  .photo-upload {
-    width: 100%; height: 160px;
-    border: 2px dashed #ccc; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; position: relative; overflow: hidden;
-    background: var(--tg-theme-secondary-bg-color, #f5f5f5);
-    transition: border-color 0.2s;
-  }
-  .photo-upload:hover { border-color: #2196F3; }
-  .photo-upload .plus { font-size: 36px; color: #aaa; line-height: 1; pointer-events: none; }
-  .photo-upload img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    position: absolute; top: 0; left: 0;
-    border-radius: 10px;
-  }
-  .photo-upload input { display: none; }
-  .photo-remove {
-    position: absolute; top: 6px; left: 6px;
-    background: rgba(0,0,0,0.55); color: #fff;
-    border: none; border-radius: 50%;
-    width: 26px; height: 26px; font-size: 14px;
-    cursor: pointer; display: none;
-    align-items: center; justify-content: center;
-    z-index: 2;
-  }
+        body {
+            font-family: 'Vazir', Tahoma, sans-serif;
+            background: var(--tg-theme-bg-color, #fff);
+            color: var(--tg-theme-text-color, #000);
+            padding: 16px;
+        }
 
-  .price-row { display: flex; align-items: center; gap: 8px; }
-  .price-row input[type=number] { flex: 1; }
-  .price-row label.toggle {
-    display: flex; align-items: center; gap: 4px;
-    font-weight: normal; white-space: nowrap;
-    cursor: pointer; font-family: 'Vazir', Tahoma, sans-serif;
-  }
+        h2 {
+            text-align: center;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
 
-  button[type=submit] {
-    width: 100%; padding: 12px; background: #2196F3;
-    color: #fff; border: none; border-radius: 10px;
-    font-size: 16px; font-family: 'Vazir', Tahoma, sans-serif;
-    cursor: pointer; margin-top: 8px;
-  }
-  button[type=submit]:active { background: #1769aa; }
-  .hidden { display: none; }
-  .error { color: red; font-size: 12px; margin-top: 4px; }
-</style>
+        .field {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            font-family: 'Vazir', Tahoma, sans-serif;
+        }
+
+        input[type=text],
+        input[type=number],
+        input[type=url],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Vazir', Tahoma, sans-serif;
+            background: var(--tg-theme-secondary-bg-color, #f5f5f5);
+            color: var(--tg-theme-text-color, #000);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* بخش عکس */
+        .photo-upload {
+            width: 100%;
+            height: 160px;
+            border: 2px dashed #ccc;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background: var(--tg-theme-secondary-bg-color, #f5f5f5);
+            transition: border-color 0.2s;
+        }
+
+        .photo-upload:hover {
+            border-color: #2196F3;
+        }
+
+        .photo-upload .plus {
+            font-size: 36px;
+            color: #aaa;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .photo-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 10px;
+        }
+
+        .photo-upload input {
+            display: none;
+        }
+
+        .photo-remove {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            background: rgba(0, 0, 0, 0.55);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            font-size: 14px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .price-row input[type=number] {
+            flex: 1;
+        }
+
+        .price-row label.toggle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: normal;
+            white-space: nowrap;
+            cursor: pointer;
+            font-family: 'Vazir', Tahoma, sans-serif;
+        }
+
+        button[type=submit] {
+            width: 100%;
+            padding: 12px;
+            background: #2196F3;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Vazir', Tahoma, sans-serif;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        button[type=submit]:active {
+            background: #1769aa;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+    </style>
 </head>
+
 <body>
 
-<h2>ثبت آگهی اسکین CS2</h2>
+    <h2>ثبت آگهی اسکین CS2</h2>
 
-<form id="adForm" onsubmit="submitForm(event)">
+    <form id="adForm" onsubmit="submitForm(event)">
 
-  <!-- عکس -->
-  <div class="field">
-    <label>عکس اسکین</label>
-    <div class="photo-upload" id="photoBox" onclick="onPhotoBoxClick(event)">
-      <span class="plus" id="plusIcon">＋</span>
-      <img id="photoPreview" src="" alt="" style="display:none">
-      <button type="button" class="photo-remove" id="removeBtn" onclick="removePhoto(event)">✕</button>
-      <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp,image/bmp" onchange="handlePhoto(event)">
-    </div>
-    <div class="error hidden" id="photoError">فقط فرمت‌های JPG، PNG، WEBP مجاز است.</div>
-  </div>
+        <!-- عکس -->
+        <div class="field">
+            <label>عکس اسکین</label>
+            <div class="photo-upload" id="photoBox" onclick="onPhotoBoxClick(event)">
+                <span class="plus" id="plusIcon">＋</span>
+                <img id="photoPreview" src="" alt="" style="display:none">
+                <button type="button" class="photo-remove" id="removeBtn" onclick="removePhoto(event)">✕</button>
+                <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp,image/bmp"
+                    onchange="handlePhoto(event)">
+            </div>
+            <div class="error hidden" id="photoError">فقط فرمت‌های JPG، PNG، WEBP مجاز است.</div>
+        </div>
 
-  <!-- نوع آگهی -->
-  <div class="field">
-    <label>نوع آگهی</label>
-    <select id="adType" onchange="setType(this.value)">
-      <option value="buy">خرید</option>
-      <option value="sell">فروش</option>
-      <option value="trade">معاوضه</option>
-    </select>
-  </div>
+        <!-- نوع آگهی -->
+        <div class="field">
+            <label>نوع آگهی</label>
+            <select id="adType">
+                <option value="buy">خرید</option>
+                <option value="sell">فروش</option>
+                <option value="trade">معاوضه</option>
+            </select>
+        </div>
 
-  <!-- نام اسکین -->
-  <div class="field">
-    <label>نام اسکین</label>
-    <input type="text" id="skinName" placeholder="مثال: AK-47 | Redline" required>
-  </div>
+        <!-- نام اسکین -->
+        <div class="field">
+            <label>نام اسکین</label>
+            <input type="text" id="skinName" placeholder="مثال: AK-47 | Redline" required>
+        </div>
 
-  <!-- کیفیت -->
-  <div class="field">
-    <label>کیفیت</label>
-    <select id="quality">
-      <option value="Factory New">Factory New</option>
-      <option value="Minimal Wear">Minimal Wear</option>
-      <option value="Field-Tested">Field-Tested</option>
-      <option value="Well-Worn">Well-Worn</option>
-      <option value="Battle-Scarred">Battle-Scarred</option>
-    </select>
-  </div>
+        <!-- کیفیت -->
+        <div class="field">
+            <label>کیفیت</label>
+            <select id="quality">
+                <option value="Factory New">Factory New</option>
+                <option value="Minimal Wear">Minimal Wear</option>
+                <option value="Field-Tested">Field-Tested</option>
+                <option value="Well-Worn">Well-Worn</option>
+                <option value="Battle-Scarred">Battle-Scarred</option>
+            </select>
+        </div>
 
-  <!-- قیمت — فقط خرید و فروش -->
-  <div class="field hidden" id="priceField">
-    <label id="priceLabel">قیمت (تومان)</label>
-    <div class="price-row">
-      <input type="number" id="price" placeholder="مبلغ به تومان" min="0">
-      <label class="toggle">
-        <input type="checkbox" id="negotiable" onchange="toggleNegotiable()"> توافقی
-      </label>
-    </div>
-  </div>
+        <!-- قیمت — فقط خرید و فروش -->
+        <div class="field hidden" id="priceField">
+            <label id="priceLabel">قیمت (تومان)</label>
+            <div class="price-row">
+                <input type="number" id="price" placeholder="مبلغ به تومان" min="0">
+                <label class="toggle">
+                    <input type="checkbox" id="negotiable" onchange="toggleNegotiable()"> توافقی
+                </label>
+            </div>
+        </div>
 
-  <!-- توضیحات -->
-  <div class="field">
-    <label>توضیحات</label>
-    <textarea id="description" placeholder="توضیحات اضافه..."></textarea>
-  </div>
+        <!-- توضیحات -->
+        <div class="field">
+            <label>توضیحات</label>
+            <textarea id="description" placeholder="توضیحات اضافه..."></textarea>
+        </div>
 
-  <!-- لینک ترید — فقط فروش و معاوضه -->
-  <div class="field hidden" id="tradeLinkField">
-    <label>لینک ترید</label>
-    <input type="url" id="tradeLink" placeholder="https://steamcommunity.com/tradeoffer/...">
-  </div>
+        <!-- لینک ترید — فقط فروش و معاوضه -->
+        <div class="field hidden" id="tradeLinkField">
+            <label>لینک ترید</label>
+            <input type="url" id="tradeLink" placeholder="https://steamcommunity.com/tradeoffer/...">
+        </div>
 
-  <button type="submit">ثبت آگهی</button>
-</form>
+        <button type="submit">ثبت آگهی</button>
+    </form>
 
-<script>
-const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand();
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
 
-let currentType = 'buy';
-let photoBase64 = null;
+        let currentType = 'buy';
+        let photoBase64 = null;
 
-// اجرای اولیه برای نمایش فیلدهای صحیح
-setType('buy');
+        // اجرای اولیه برای نمایش فیلدهای صحیح
+        setType('buy');
 
-function setType(type) {
-  currentType = type;
+        function setType(type) {
+            currentType = type;
 
-  // قیمت: فقط خرید و فروش
-  document.getElementById('priceField').classList.toggle('hidden', type === 'trade');
+            // قیمت: فقط خرید و فروش
+            document.getElementById('priceField').classList.toggle('hidden', type === 'trade');
 
-  // لینک ترید: فقط فروش و معاوضه
-  document.getElementById('tradeLinkField').classList.toggle('hidden', type === 'buy');
+            // لینک ترید: فقط فروش و معاوضه
+            document.getElementById('tradeLinkField').classList.toggle('hidden', type === 'buy');
 
-  // لیبل قیمت
-  document.getElementById('priceLabel').textContent =
-    type === 'buy' ? 'قیمت مد نظر (تومان)' : 'قیمت (تومان)';
-}
+            // لیبل قیمت
+            document.getElementById('priceLabel').textContent =
+                type === 'buy' ? 'قیمت مد نظر (تومان)' : 'قیمت (تومان)';
+        }
 
-function toggleNegotiable() {
-  const neg = document.getElementById('negotiable').checked;
-  const priceInput = document.getElementById('price');
-  priceInput.disabled = neg;
-  if (neg) priceInput.value = '';
-}
+        document.getElementById('adType').addEventListener('change', function () {
+            setType(this.value);
+        });
 
-function onPhotoBoxClick(e) {
-  // اگر روی دکمه حذف کلیک شد، فایل‌پیکر باز نشود
-  if (e.target.id === 'removeBtn') return;
-  document.getElementById('photoInput').click();
-}
+        function toggleNegotiable() {
+            const neg = document.getElementById('negotiable').checked;
+            const priceInput = document.getElementById('price');
+            priceInput.disabled = neg;
+            if (neg) priceInput.value = '';
+        }
 
-function handlePhoto(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+        function onPhotoBoxClick(e) {
+            // اگر روی دکمه حذف کلیک شد، فایل‌پیکر باز نشود
+            if (e.target.id === 'removeBtn') return;
+            document.getElementById('photoInput').click();
+        }
 
-  const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/bmp'];
-  if (!allowed.includes(file.type)) {
-    document.getElementById('photoError').classList.remove('hidden');
-    event.target.value = '';
-    return;
-  }
-  document.getElementById('photoError').classList.add('hidden');
+        function handlePhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = e => {
-    photoBase64 = e.target.result;
+            const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/bmp'];
+            if (!allowed.includes(file.type)) {
+                document.getElementById('photoError').classList.remove('hidden');
+                event.target.value = '';
+                return;
+            }
+            document.getElementById('photoError').classList.add('hidden');
 
-    const preview = document.getElementById('photoPreview');
-    preview.src = photoBase64;
-    preview.style.display = 'block';
+            const reader = new FileReader();
+            reader.onload = e => {
+                photoBase64 = e.target.result;
 
-    document.getElementById('plusIcon').style.display = 'none';
+                const preview = document.getElementById('photoPreview');
+                preview.src = photoBase64;
+                preview.style.display = 'block';
 
-    const removeBtn = document.getElementById('removeBtn');
-    removeBtn.style.display = 'flex';
-  };
-  reader.readAsDataURL(file);
-}
+                document.getElementById('plusIcon').style.display = 'none';
 
-function removePhoto(e) {
-  e.stopPropagation();
-  photoBase64 = null;
+                const removeBtn = document.getElementById('removeBtn');
+                removeBtn.style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+        }
 
-  const preview = document.getElementById('photoPreview');
-  preview.src = '';
-  preview.style.display = 'none';
+        function removePhoto(e) {
+            e.stopPropagation();
+            photoBase64 = null;
 
-  document.getElementById('plusIcon').style.display = 'block';
-  document.getElementById('removeBtn').style.display = 'none';
-  document.getElementById('photoInput').value = '';
-}
+            const preview = document.getElementById('photoPreview');
+            preview.src = '';
+            preview.style.display = 'none';
 
-function submitForm(e) {
-  e.preventDefault();
+            document.getElementById('plusIcon').style.display = 'block';
+            document.getElementById('removeBtn').style.display = 'none';
+            document.getElementById('photoInput').value = '';
+        }
 
-  const skinName = document.getElementById('skinName').value.trim();
-  if (!skinName) return;
+        function submitForm(e) {
+            e.preventDefault();
 
-  const negotiable = document.getElementById('negotiable').checked;
-  const priceVal = document.getElementById('price').value;
-  const price = negotiable ? 'توافقی' : (priceVal || null);
+            const skinName = document.getElementById('skinName').value.trim();
+            if (!skinName) return;
 
-  const data = {
-    type: currentType,
-    skin_name: skinName,
-    quality: document.getElementById('quality').value,
-    description: document.getElementById('description').value.trim(),
-    photo: photoBase64,
-  };
+            const negotiable = document.getElementById('negotiable').checked;
+            const priceVal = document.getElementById('price').value;
+            const price = negotiable ? 'توافقی' : (priceVal || null);
 
-  if (currentType !== 'trade') data.price = price;
-  if (currentType === 'sell' || currentType === 'trade') {
-    data.trade_link = document.getElementById('tradeLink').value.trim();
-  }
+            const data = {
+                type: currentType,
+                skin_name: skinName,
+                quality: document.getElementById('quality').value,
+                description: document.getElementById('description').value.trim(),
+                photo: photoBase64,
+            };
 
-  tg.sendData(JSON.stringify(data));
-}
-</script>
+            if (currentType !== 'trade') data.price = price;
+            if (currentType === 'sell' || currentType === 'trade') {
+                data.trade_link = document.getElementById('tradeLink').value.trim();
+            }
+
+            tg.sendData(JSON.stringify(data));
+        }
+
+        
+    </script>
 </body>
+
 </html>
