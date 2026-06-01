@@ -99,6 +99,13 @@
         .hidden {
             display: none;
         }
+
+        .form-error {
+            color: #d32f2f;
+            font-size: 13px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -106,7 +113,7 @@
 
     <h2>ثبت آگهی اسکین CS2</h2>
 
-    <form id="adForm" onsubmit="submitForm(event)">
+    <form id="adForm" novalidate>
 
         <!-- نوع آگهی -->
         <div class="field">
@@ -159,61 +166,138 @@
             <input type="url" id="tradeLink" placeholder="https://steamcommunity.com/tradeoffer/...">
         </div>
 
-        <button type="submit">ثبت آگهی</button>
+        <p id="formError" class="form-error hidden"></p>
+        <button type="button" id="submitBtn">ثبت آگهی</button>
     </form>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
 
-        let currentType = 'buy';
+        const formError = document.getElementById('formError');
+        const submitBtn = document.getElementById('submitBtn');
 
-        setType('buy');
+        function showError(message) {
+            formError.textContent = message;
+            formError.classList.remove('hidden');
+        }
+
+        function hideError() {
+            formError.textContent = '';
+            formError.classList.add('hidden');
+        }
 
         function setType(type) {
-            currentType = type;
+            const isTrade = type === 'trade';
+            const isBuy = type === 'buy';
+            const negotiable = document.getElementById('negotiable').checked;
+            const priceInput = document.getElementById('price');
+            const tradeLinkInput = document.getElementById('tradeLink');
 
-            document.getElementById('priceField').classList.toggle('hidden', type === 'trade');
-            document.getElementById('tradeLinkField').classList.toggle('hidden', type === 'buy');
+            document.getElementById('priceField').classList.toggle('hidden', isTrade);
+            document.getElementById('tradeLinkField').classList.toggle('hidden', isBuy);
             document.getElementById('priceLabel').textContent =
-                type === 'buy' ? 'قیمت مد نظر (تومان)' : 'قیمت (تومان)';
+                isBuy ? 'قیمت مد نظر (تومان)' : 'قیمت (تومان)';
+
+            // فیلدهای مخفی در validation مرورگر باعث block شدن submit می‌شوند
+            priceInput.disabled = isTrade || negotiable;
+            tradeLinkInput.disabled = isBuy;
         }
+
+        setType('buy');
 
         document.getElementById('adType').addEventListener('change', function () {
             setType(this.value);
         });
 
         function toggleNegotiable() {
-            const neg = document.getElementById('negotiable').checked;
+            const negotiable = document.getElementById('negotiable').checked;
             const priceInput = document.getElementById('price');
-            priceInput.disabled = neg;
-            if (neg) priceInput.value = '';
+            const isTrade = document.getElementById('adType').value === 'trade';
+            priceInput.disabled = negotiable || isTrade;
+            if (negotiable) priceInput.value = '';
         }
 
-        function submitForm(e) {
-            e.preventDefault();
-
+        function collectData() {
+            const type = document.getElementById('adType').value;
             const skinName = document.getElementById('skinName').value.trim();
-            if (!skinName) return;
+            if (!skinName) {
+                showError('لطفاً نام اسکین را وارد کنید.');
+                return null;
+            }
 
             const negotiable = document.getElementById('negotiable').checked;
             const priceVal = document.getElementById('price').value;
-            const price = negotiable ? 'توافقی' : (priceVal || null);
+
+            const tradeLink = document.getElementById('tradeLink').value.trim();
+            if ((type === 'sell' || type === 'trade') && tradeLink) {
+                try {
+                    new URL(tradeLink);
+                } catch {
+                    showError('لینک ترید معتبر نیست.');
+                    return null;
+                }
+            }
 
             const data = {
-                type: currentType,
+                type: type,
                 skin_name: skinName,
                 quality: document.getElementById('quality').value,
                 description: document.getElementById('description').value.trim(),
             };
 
-            if (currentType !== 'trade') data.price = price;
-            if (currentType === 'sell' || currentType === 'trade') {
-                data.trade_link = document.getElementById('tradeLink').value.trim();
+            if (type !== 'trade') {
+                data.price = negotiable ? 'توافقی' : (priceVal || null);
+            }
+            if (type === 'sell' || type === 'trade') {
+                data.trade_link = tradeLink;
             }
 
-            tg.sendData(JSON.stringify(data));
+            return data;
+        }
+
+        function submitAd() {
+            hideError();
+
+            if (!tg || typeof tg.sendData !== 'function') {
+                showError('لطفاً این فرم را از داخل تلگرام باز کنید.');
+                return;
+            }
+
+            const data = collectData();
+            if (!data) return;
+
+            submitBtn.disabled = true;
+            if (tg.MainButton) {
+                tg.MainButton.showProgress(true);
+            }
+
+            try {
+                tg.sendData(JSON.stringify(data));
+                tg.close();
+            } catch (err) {
+                submitBtn.disabled = false;
+                if (tg.MainButton) {
+                    tg.MainButton.hideProgress();
+                }
+                showError('ارسال ناموفق بود. دوباره تلاش کنید.');
+            }
+        }
+
+        document.getElementById('adForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            submitAd();
+        });
+        submitBtn.addEventListener('click', submitAd);
+
+        if (tg?.MainButton) {
+            tg.MainButton.setText('ثبت آگهی');
+            tg.MainButton.onClick(submitAd);
+            tg.MainButton.show();
+            submitBtn.classList.add('hidden');
         }
     </script>
 </body>
