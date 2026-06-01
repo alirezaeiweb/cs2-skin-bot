@@ -116,7 +116,7 @@
 
 <body>
 
-    <h2>ثبت آگهی اسکین CS2</h2>
+    <h2>ثبت آگهی آیتم‌های CS2</h2>
 
     <form id="adForm" novalidate>
 
@@ -130,10 +130,10 @@
             </select>
         </div>
 
-        <!-- نام اسکین -->
+        <!-- نام آیتم‌ها -->
         <div class="field">
-            <label>نام اسکین</label>
-            <input type="text" id="skinName" placeholder="مثال: AK-47 | Redline" required>
+            <label>نام آیتم‌ها</label>
+            <input type="text" id="skinName" placeholder="مثال: AK-47 | Redline — چند آیتم با ویرگول" required>
         </div>
 
         <!-- کیفیت -->
@@ -230,7 +230,7 @@
             const type = document.getElementById('adType').value;
             const skinName = document.getElementById('skinName').value.trim();
             if (!skinName) {
-                showError('لطفاً نام اسکین را وارد کنید.');
+                showError('لطفاً نام آیتم‌ها را وارد کنید.');
                 return null;
             }
 
