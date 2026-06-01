@@ -130,22 +130,10 @@
             </select>
         </div>
 
-        <!-- نام آیتم‌ها -->
+        <!-- عنوان آگهی -->
         <div class="field">
-            <label>نام آیتم‌ها</label>
-            <input type="text" id="skinName" placeholder="مثال: AK-47 | Redline — چند آیتم با ویرگول" required>
-        </div>
-
-        <!-- کیفیت -->
-        <div class="field">
-            <label>کیفیت</label>
-            <select id="quality">
-                <option value="Factory New">Factory New</option>
-                <option value="Minimal Wear">Minimal Wear</option>
-                <option value="Field-Tested">Field-Tested</option>
-                <option value="Well-Worn">Well-Worn</option>
-                <option value="Battle-Scarred">Battle-Scarred</option>
-            </select>
+            <label>عنوان آگهی</label>
+            <input type="text" id="skinName" placeholder="Ak-47 | redline FT, Tec-9 | Fuel injector, ..." required>
         </div>
 
         <!-- قیمت — فقط خرید و فروش -->
@@ -162,7 +150,7 @@
         <!-- توضیحات -->
         <div class="field">
             <label>توضیحات</label>
-            <textarea id="description" placeholder="توضیحات اضافه..."></textarea>
+            <textarea id="description" placeholder="اطلاعات اسکین‌های خود را به همراه Float و Pattern در صورت لزوم اینجا بنویسید."></textarea>
         </div>
 
         <!-- لینک ترید — فقط فروش و معاوضه -->
@@ -204,8 +192,7 @@
 
             document.getElementById('priceField').classList.toggle('hidden', isTrade);
             document.getElementById('tradeLinkField').classList.toggle('hidden', isBuy);
-            document.getElementById('priceLabel').textContent =
-                isBuy ? 'قیمت مد نظر (تومان)' : 'قیمت (تومان)';
+            document.getElementById('priceLabel').textContent = 'قیمت کل آیتم‌ها (تومان)';
 
             // فیلدهای مخفی در validation مرورگر باعث block شدن submit می‌شوند
             priceInput.disabled = isTrade || negotiable;
@@ -230,7 +217,7 @@
             const type = document.getElementById('adType').value;
             const skinName = document.getElementById('skinName').value.trim();
             if (!skinName) {
-                showError('لطفاً نام آیتم‌ها را وارد کنید.');
+                showError('لطفاً عنوان آگهی را وارد کنید.');
                 return null;
             }
 
@@ -250,7 +237,6 @@
             const data = {
                 type: type,
                 skin_name: skinName,
-                quality: document.getElementById('quality').value,
                 description: document.getElementById('description').value.trim(),
             };
 
